@@ -1,21 +1,21 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from "reselect";
 
 import './App.scss';
 
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAnsSignOut from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import Header from './components/header/header.component';
-import { auth, createUserProfileDocument } from './firebase/firebase.utils'
-import { setCurrentUser } from './redux/user/user.action';
+import CheckoutPage from "./pages/checkout/checkout.component";
 
-const HatsPage = () => (
-  <div>
-    <h1>Hats</h1>
-  </div>
-)
+import Header from './components/header/header.component';
+
+import { auth, createUserProfileDocument } from './firebase/firebase.utils'
+
+import { setCurrentUser } from './redux/user/user.action';
+import { selectCurrentUser } from "./redux/user/user.selectors";
 
 class App extends React.Component {
 
@@ -48,8 +48,8 @@ class App extends React.Component {
         <Header/>
         <Switch>
           <Route exact path='/' component={HomePage} />
-          <Route exact path='/shop' component={ShopPage} />
-          <Route exact path='/hats' component={HatsPage} />
+          <Route path='/shop' component={ShopPage} />
+          <Route exact path='/checkout' component={CheckoutPage} />
           <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to="/" />) : (<SignInAnsSignOut/>) } />
         </Switch>
       </div>
@@ -57,8 +57,8 @@ class App extends React.Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 });
 
 const mapDispatchProps = dispatch => ({
